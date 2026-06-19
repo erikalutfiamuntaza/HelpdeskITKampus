@@ -3,8 +3,8 @@ package view;
 import javax.swing.*;
 import java.sql.*;
 import database.ConnectionDB;
-import view.AdminDashboard;
-import view.UserDashboard;
+import view.DashboardAdmin;
+import view.UserManagementForm;
 
 public class LoginForm extends JFrame {
 
@@ -59,9 +59,9 @@ public class LoginForm extends JFrame {
                     JOptionPane.showMessageDialog(this, "Login berhasil!");
 
                     if (role.equals("admin")) {
-                        new AdminDashboard().setVisible(true);
+                        new DashboardAdmin().setVisible(true);
                     } else {
-                        new UserDashboard().setVisible(true);
+                        new UserManagementForm().setVisible(true);
                     }
 
                     this.dispose(); // nutup login form

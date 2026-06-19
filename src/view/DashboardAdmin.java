@@ -4,14 +4,29 @@ import javax.swing.*;
 
 public class DashboardAdmin extends JFrame {
 
-    public DashboardAdmin() {
-        setTitle("Dashboard Admin");
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JButton userButton = new JButton("Kelola User");
+    JButton statusButton = new JButton("Update Status Tiket");
 
-        JLabel label = new JLabel("Dashboard Admin", SwingConstants.CENTER);
-        add(label);
+    public DashboardAdmin() {
+
+        setTitle("Dashboard Admin");
+        setSize(400, 200);
+        setLayout(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        userButton.setBounds(100, 30, 200, 30);
+        statusButton.setBounds(100, 80, 200, 30);
+
+        add(userButton);
+        add(statusButton);
+
+        userButton.addActionListener(e -> {
+            new UserManagementForm();
+        });
+
+        statusButton.addActionListener(e -> {
+            new UpdateStatusForm();
+        });
 
         setVisible(true);
     }
