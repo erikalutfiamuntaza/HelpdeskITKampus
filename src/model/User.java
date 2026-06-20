@@ -48,4 +48,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public void aksesDashboard(){System.out.println("User membuka dashboard");}
 }
