@@ -31,22 +31,29 @@ public class UserDashboard extends JFrame {
         btnLogout.setBounds(100, 180, 180, 35);
         add(btnLogout);
 
-        // Tombol Buat Tiket
         btnBuatTiket.addActionListener(e -> {
             dispose();
             new TicketForm();
         });
 
-        // Tombol Tiket Saya
         btnTiketSaya.addActionListener(e -> {
             dispose();
             new MyTicketForm();
         });
 
-        // Tombol Logout
         btnLogout.addActionListener(e -> {
-            dispose();
-            new LoginForm();
+
+            int pilihan = JOptionPane.showConfirmDialog(
+                    this,
+                    "Yakin ingin logout?",
+                    "Konfirmasi Logout",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (pilihan == JOptionPane.YES_OPTION) {
+                dispose();
+                new LoginForm();
+            }
         });
 
         setVisible(true);

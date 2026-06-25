@@ -11,7 +11,9 @@ public class EditTicketForm extends JFrame {
 
     JTextField txtJudul = new JTextField();
     JTextArea txtDeskripsi = new JTextArea();
+
     JButton btnSimpan = new JButton("Simpan");
+    JButton btnBatal = new JButton("Batal");
 
     int idTicket;
 
@@ -20,79 +22,116 @@ public class EditTicketForm extends JFrame {
         idTicket = id;
 
         setTitle("Edit Tiket");
-        setSize(400,300);
+        setSize(400, 320);
         setLayout(null);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         JLabel lbl1 = new JLabel("Judul");
-        lbl1.setBounds(20,20,100,25);
+        lbl1.setBounds(20, 20, 100, 25);
         add(lbl1);
 
-        txtJudul.setBounds(20,45,300,25);
+        txtJudul.setBounds(20, 45, 300, 25);
         add(txtJudul);
 
         JLabel lbl2 = new JLabel("Deskripsi");
-        lbl2.setBounds(20,80,100,25);
+        lbl2.setBounds(20, 80, 100, 25);
         add(lbl2);
 
         JScrollPane sp = new JScrollPane(txtDeskripsi);
-        sp.setBounds(20,105,300,80);
+        sp.setBounds(20, 105, 300, 80);
         add(sp);
 
-        btnSimpan.setBounds(120,210,120,30);
+        btnSimpan.setBounds(60, 220, 120, 30);
         add(btnSimpan);
+
+        btnBatal.setBounds(200, 220, 120, 30);
+        add(btnBatal);
 
         try {
 
             Connection conn = ConnectionDB.connect();
 
-            String sql = "SELECT * FROM tickets WHERE id=?";
+            String sql =
+                    "SELECT * FROM tickets WHERE id=?";
 
-            PreparedStatement pst = conn.prepareStatement(sql);
+            PreparedStatement pst =
+                    conn.prepareStatement(sql);
 
-            pst.setInt(1,idTicket);
+            pst.setInt(1, idTicket);
 
             ResultSet rs = pst.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
 
-                txtJudul.setText(rs.getString("judul"));
-                txtDeskripsi.setText(rs.getString("deskripsi"));
+                txtJudul.setText(
+                        rs.getString("judul")
+                );
 
+                txtDeskripsi.setText(
+                        rs.getString("deskripsi")
+                );
             }
 
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        btnSimpan.addActionListener(e->{
+        btnSimpan.addActionListener(e -> {
 
-            try{
+            String judul =
+                    txtJudul.getText().trim();
 
-                Connection conn = ConnectionDB.connect();
+            String deskripsi =
+                    txtDeskripsi.getText().trim();
 
-                String sql = "UPDATE tickets SET judul=?, deskripsi=? WHERE id=?";
+            if (judul.isEmpty() ||
+                    deskripsi.isEmpty()) {
 
-                PreparedStatement pst = conn.prepareStatement(sql);
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Semua data harus diisi!"
+                );
 
-                pst.setString(1, txtJudul.getText());
-                pst.setString(2, txtDeskripsi.getText());
+                return;
+            }
+
+            try {
+
+                Connection conn =
+                        ConnectionDB.connect();
+
+                String sql =
+                        "UPDATE tickets SET judul=?, deskripsi=? WHERE id=?";
+
+                PreparedStatement pst =
+                        conn.prepareStatement(sql);
+
+                pst.setString(1, judul);
+                pst.setString(2, deskripsi);
                 pst.setInt(3, idTicket);
 
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this,
-                        "Tiket berhasil diupdate!");
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Tiket berhasil diupdate!"
+                );
 
                 dispose();
+                new MyTicketForm();
 
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
         });
 
-        setVisible(true);
+        btnBatal.addActionListener(e -> {
+            dispose();
+            new MyTicketForm();
+        });
 
+        setVisible(true);
     }
 }

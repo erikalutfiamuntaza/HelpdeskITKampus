@@ -4,6 +4,7 @@ import database.ConnectionDB;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -12,7 +13,9 @@ public class UpdateStatusForm extends JFrame {
 
     JTable table;
     DefaultTableModel model;
+
     JButton updateButton = new JButton("Update Status");
+    JButton btnKembali = new JButton("Kembali");
 
     public UpdateStatusForm() {
 
@@ -20,6 +23,7 @@ public class UpdateStatusForm extends JFrame {
         setSize(700, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
 
         model = new DefaultTableModel();
 
@@ -32,11 +36,21 @@ public class UpdateStatusForm extends JFrame {
 
         loadData();
 
-        add(new JScrollPane(table));
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
-        add(updateButton, java.awt.BorderLayout.SOUTH);
+        JPanel panel = new JPanel();
+
+        panel.add(updateButton);
+        panel.add(btnKembali);
+
+        add(panel, BorderLayout.SOUTH);
 
         updateButton.addActionListener(e -> updateStatus());
+
+        btnKembali.addActionListener(e -> {
+            dispose();
+            new DashboardAdmin();
+        });
 
         setVisible(true);
     }
@@ -45,11 +59,14 @@ public class UpdateStatusForm extends JFrame {
 
         try {
 
-            Connection conn = ConnectionDB.connect();
+            Connection conn =
+                    ConnectionDB.connect();
 
-            Statement st = conn.createStatement();
+            Statement st =
+                    conn.createStatement();
 
-            ResultSet rs = st.executeQuery("SELECT * FROM tickets");
+            ResultSet rs =
+                    st.executeQuery("SELECT * FROM tickets");
 
             while (rs.next()) {
 
@@ -72,36 +89,64 @@ public class UpdateStatusForm extends JFrame {
         int row = table.getSelectedRow();
 
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih tiket terlebih dahulu!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Pilih tiket terlebih dahulu!"
+            );
             return;
         }
 
         int id = (int) table.getValueAt(row, 0);
 
-        String statusBaru = JOptionPane.showInputDialog(
-                this,
-                "Masukkan status baru (OPEN / PROCESS / DONE)"
-        );
+        String[] pilihan = {
+                "Open",
+                "In Progress",
+                "Resolved"
+        };
+
+        String statusBaru =
+                (String) JOptionPane.showInputDialog(
+                        this,
+                        "Pilih status baru:",
+                        "Update Status",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        pilihan,
+                        pilihan[0]
+                );
+
+        if (statusBaru == null) {
+            return;
+        }
 
         try {
 
-            Connection conn = ConnectionDB.connect();
+            Connection conn =
+                    ConnectionDB.connect();
 
-            Statement st = conn.createStatement();
+            Statement st =
+                    conn.createStatement();
 
             st.executeUpdate(
-                    "UPDATE tickets SET status='" +
-                            statusBaru +
+                    "UPDATE tickets SET status='"
+                            + statusBaru +
                             "' WHERE id=" + id
             );
 
-            JOptionPane.showMessageDialog(this, "Status berhasil diupdate!");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Status berhasil diupdate!"
+            );
 
-            dispose();
-            new UpdateStatusForm();
+            model.setRowCount(0);
+            loadData();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        new UpdateStatusForm();
     }
 }
