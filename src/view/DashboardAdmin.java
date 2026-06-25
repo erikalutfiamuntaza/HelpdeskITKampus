@@ -52,13 +52,7 @@ public class DashboardAdmin extends JFrame {
 
         statusButton.addActionListener(e -> {
 
-
-            AdminController ac =
-                    new AdminController();
-
-
-
-            ac.lihatSemuaTicket();
+            new UpdateStatusForm();
 
 
 
